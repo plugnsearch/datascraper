@@ -6,7 +6,7 @@ const HTML = `
 <html>
   <head>
     <meta name="foo" content="bar" />
-    <meta name="foo" content="more bar" />
+    <meta name="fooo" content="more bar" />
     <meta name="foo" content="baz" />
   </head>
   <body>
@@ -32,7 +32,8 @@ const METHODS = {
     })
 
     return outerHTML.replace('', '')
-  }
+  },
+  asArray: elem => console.log(elem)
 }
 
 describe('processor', () => {
@@ -81,6 +82,12 @@ describe('processor', () => {
       expect(
         processor(['[name=foo]', ['|> attr', 'content']], $, METHODS)
       ).toEqual('bar')
+    })
+
+    it('can return content of all matching elements as array', () => {
+      expect(
+        processor(['[name=foo]', '!array', ['|> attr', 'content']], $, METHODS)
+      ).toEqual(['bar', 'baz'])
     })
 
     it('will return empty string if it does not have content', () => {

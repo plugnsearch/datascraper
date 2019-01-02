@@ -13,11 +13,12 @@ function getContent(elem, $) {
 }
 
 function processor(attrs, $, helpers) {
+  const flags = {}
   const value = (Array.isArray(attrs) ? attrs : [attrs]).reduce(function(
     lastValue,
     attr
   ) {
-    return subprocessor(attr, $, helpers, lastValue)
+    return subprocessor(attr, $, helpers, lastValue, flags)
   },
   null)
 
@@ -28,11 +29,16 @@ function processor(attrs, $, helpers) {
   return value
 }
 
-function subprocessor(attr, $, helpers, value) {
+function subprocessor(attr, $, helpers, value, flags) {
   let pipeArgs
   if (Array.isArray(attr)) {
     pipeArgs = attr.slice(1)
     attr = attr[0]
+  }
+
+  if (attr[0] === '!') {
+    flags[attr.slice(1)] = true
+    return value
   }
 
   const constMatch = REGEX_CONSTANTS.exec(attr)
@@ -46,6 +52,13 @@ function subprocessor(attr, $, helpers, value) {
       throw new Error(
         `There is no helper called "${pipeMatch[1]}" defined. Please define one`
       )
+    }
+    if (flags.array && value.length) {
+      return value
+        .map(function(i, v) {
+          return helpers[pipeMatch[1]]($(this), pipeArgs, $)
+        })
+        .get()
     }
     return helpers[pipeMatch[1]](value, pipeArgs, $)
   }
