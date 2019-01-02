@@ -69,6 +69,14 @@ describe('processor', () => {
       expect(processor(['.joo', '|> upper'], $, METHODS)).toEqual('CONTENT 2')
     })
 
+    it('value can be passed through pipes', () => {
+      expect(() => {
+        processor(['.joo', '|> noExist'], $, METHODS)
+      }).toThrow(
+        `There is no helper called "noExist" defined. Please define one`
+      )
+    })
+
     it('will return content of first matching element by default', () => {
       expect(
         processor(['[name=foo]', ['|> attr', 'content']], $, METHODS)

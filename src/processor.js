@@ -42,6 +42,11 @@ function subprocessor(attr, $, helpers, value) {
 
   const pipeMatch = REGEX_PIPE.exec(attr)
   if (pipeMatch) {
+    if (!helpers[pipeMatch[1]]) {
+      throw new Error(
+        `There is no helper called "${pipeMatch[1]}" defined. Please define one`
+      )
+    }
     return helpers[pipeMatch[1]](value, pipeArgs, $)
   }
 
