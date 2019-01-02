@@ -7,10 +7,17 @@ module.exports = class DataScraper {
   }
 
   parse($) {
-    return Object.keys(this.mapping).reduce(
+    return this.process(this.mapping, $)
+  }
+
+  process(def, $) {
+    return Object.keys(def).reduce(
       (result, key) => ({
         ...result,
-        [key]: processor(this.mapping[key], $, this.helpers)
+        [key]:
+          typeof def[key] === 'object' && !Array.isArray(def[key])
+            ? this.process(def[key], $)
+            : processor(def[key], $, this.helpers)
       }),
       {}
     )
