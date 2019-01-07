@@ -84,10 +84,18 @@ describe('processor', () => {
       ).toEqual('bar')
     })
 
-    it('can return content of all matching elements as array', () => {
+    it('can return attribute of all matching elements as array', () => {
       expect(
         processor(['[name=foo]', '!array', ['|> attr', 'content']], $, METHODS)
       ).toEqual(['bar', 'baz'])
+    })
+
+    it('can return content of all matching elements as array', () => {
+      expect(processor(['p', '!array'], $, METHODS)).toEqual([
+        'content 1',
+        'content 2',
+        'content 3'
+      ])
     })
 
     it('will return empty string if it does not have content', () => {

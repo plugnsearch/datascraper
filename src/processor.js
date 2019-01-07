@@ -24,7 +24,11 @@ function processor(attrs, $, helpers) {
 
   // If the value is an element still, we just take the inner text of it and return that
   if (typeof value === 'object' && typeof value.text === 'function') {
-    return value.text()
+    if (flags.array) {
+      return value.map((i, el) => $(el).text()).get()
+    } else {
+      return value.text()
+    }
   }
   return value
 }
