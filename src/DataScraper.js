@@ -12,13 +12,13 @@ module.exports = class DataScraper {
 
   process(def, $) {
     return Object.keys(def).reduce(
-      (result, key) => ({
-        ...result,
-        [key]:
-          typeof def[key] === 'object' && !Array.isArray(def[key])
-            ? this.process(def[key], $)
-            : processor(def[key], $, this.helpers)
-      }),
+      (result, key) =>
+        Object.assign({}, result, {
+          [key]:
+            typeof def[key] === 'object' && !Array.isArray(def[key])
+              ? this.process(def[key], $)
+              : processor(def[key], $, this.helpers)
+        }),
       {}
     )
   }
